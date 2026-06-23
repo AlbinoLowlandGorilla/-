@@ -1,0 +1,19 @@
+{
+  "name": "복습플랜 · 공부시간 & 복습 진도",
+  "short_name": "복습플랜",
+  "description": "고등학생을 위한 공부시간 체크 + 시험 전 간격 반복 복습 관리 앱",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f6fb",
+  "theme_color": "#4f46e5",
+  "lang": "ko",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

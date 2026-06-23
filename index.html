@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="theme-color" content="#4f46e5" />
+  <title>복습플랜 · 공부시간 & 복습 진도 체크</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" type="image/svg+xml" href="icon.svg" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="복습플랜" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <span class="logo">📚</span>
+      <div>
+        <h1>복습플랜</h1>
+        <p class="tagline">공부시간 체크 · 시험 전 똑똑한 복습</p>
+      </div>
+    </div>
+  </header>
+
+  <nav class="tabbar" id="tabbar">
+    <button class="tab active" data-tab="dashboard">🏠 홈</button>
+    <button class="tab" data-tab="reviews">🔁 복습</button>
+    <button class="tab" data-tab="timer">⏱️ 공부시간</button>
+    <button class="tab" data-tab="stats">📊 통계</button>
+  </nav>
+
+  <main id="app">
+    <!-- ===== 대시보드 ===== -->
+    <section class="view active" id="view-dashboard">
+      <div class="card hero">
+        <p class="hero-date" id="todayLabel"></p>
+        <div class="hero-grid">
+          <div class="hero-stat">
+            <span class="hero-num" id="dashTodayReviews">0</span>
+            <span class="hero-lbl">오늘 복습할 항목</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-num" id="dashTodayStudy">0분</span>
+            <span class="hero-lbl">오늘 공부시간</span>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="section-title">📌 오늘 복습할 내용</h2>
+      <div id="dashReviewList" class="list"></div>
+
+      <h2 class="section-title">⏰ 다가오는 시험</h2>
+      <div id="dashExamList" class="list"></div>
+    </section>
+
+    <!-- ===== 복습 ===== -->
+    <section class="view" id="view-reviews">
+      <button class="btn primary block" id="openAddLesson">＋ 수업 내용 추가</button>
+
+      <div class="filter-row">
+        <button class="chip active" data-filter="all">전체</button>
+        <button class="chip" data-filter="today">오늘</button>
+        <button class="chip" data-filter="overdue">밀린 복습</button>
+        <button class="chip" data-filter="done">완료</button>
+      </div>
+
+      <div id="lessonList" class="list"></div>
+    </section>
+
+    <!-- ===== 타이머 ===== -->
+    <section class="view" id="view-timer">
+      <div class="card timer-card">
+        <select id="timerSubject" class="select"></select>
+        <div class="timer-display" id="timerDisplay">00:00:00</div>
+        <div class="timer-controls">
+          <button class="btn primary" id="timerStart">시작</button>
+          <button class="btn" id="timerPause" disabled>일시정지</button>
+          <button class="btn ghost" id="timerStop" disabled>저장</button>
+        </div>
+        <p class="timer-hint">과목을 고르고 공부를 시작하세요. ‘저장’을 누르면 오늘 기록에 더해집니다.</p>
+      </div>
+
+      <h2 class="section-title">오늘 공부 기록</h2>
+      <div id="todayStudyList" class="list"></div>
+
+      <button class="btn ghost block" id="manualLogBtn">＋ 직접 시간 입력</button>
+    </section>
+
+    <!-- ===== 통계 ===== -->
+    <section class="view" id="view-stats">
+      <div class="card">
+        <h2 class="section-title" style="margin-top:0">최근 7일 공부시간</h2>
+        <div id="weekChart" class="chart"></div>
+      </div>
+      <div class="card">
+        <h2 class="section-title" style="margin-top:0">과목별 누적 공부시간</h2>
+        <div id="subjectStats" class="list"></div>
+      </div>
+      <div class="card">
+        <h2 class="section-title" style="margin-top:0">복습 진행률</h2>
+        <div id="reviewProgress" class="list"></div>
+      </div>
+      <button class="btn ghost block danger" id="resetData">⚠️ 모든 데이터 초기화</button>
+    </section>
+  </main>
+
+  <!-- ===== 수업 추가 모달 ===== -->
+  <div class="modal-backdrop" id="lessonModal" hidden>
+    <div class="modal">
+      <h3 id="lessonModalTitle">수업 내용 추가</h3>
+      <label class="field">
+        <span>과목</span>
+        <input type="text" id="f_subject" list="subjectSuggest" placeholder="예: 수학, 영어, 한국사" />
+        <datalist id="subjectSuggest"></datalist>
+      </label>
+      <label class="field">
+        <span>단원 / 배운 내용</span>
+        <input type="text" id="f_topic" placeholder="예: 미적분 - 극한, 1단원 어법" />
+      </label>
+      <label class="field">
+        <span>메모 (선택)</span>
+        <textarea id="f_note" rows="2" placeholder="헷갈리는 부분, 외울 공식 등"></textarea>
+      </label>
+      <div class="field-row">
+        <label class="field">
+          <span>수업한 날</span>
+          <input type="date" id="f_classDate" />
+        </label>
+        <label class="field">
+          <span>시험 날</span>
+          <input type="date" id="f_examDate" />
+        </label>
+      </div>
+      <p class="preview" id="schedulePreview"></p>
+      <div class="modal-actions">
+        <button class="btn ghost" id="lessonCancel">취소</button>
+        <button class="btn primary" id="lessonSave">저장</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 직접 시간 입력 모달 ===== -->
+  <div class="modal-backdrop" id="logModal" hidden>
+    <div class="modal">
+      <h3>공부시간 직접 입력</h3>
+      <label class="field">
+        <span>과목</span>
+        <input type="text" id="l_subject" list="subjectSuggest" placeholder="과목명" />
+      </label>
+      <label class="field">
+        <span>시간 (분)</span>
+        <input type="number" id="l_minutes" min="1" placeholder="예: 50" />
+      </label>
+      <div class="modal-actions">
+        <button class="btn ghost" id="logCancel">취소</button>
+        <button class="btn primary" id="logSave">저장</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
