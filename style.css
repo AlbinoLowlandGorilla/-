@@ -229,6 +229,8 @@ main { max-width: 640px; margin: 0 auto; padding: 16px; }
   display: flex; align-items: flex-end; justify-content: center;
   z-index: 50;
 }
+/* hidden 속성이 display:flex보다 우선하도록 (안 그러면 모달이 항상 떠서 클릭을 가로챔) */
+.modal-backdrop[hidden] { display: none; }
 .modal {
   background: #fff;
   width: 100%;
