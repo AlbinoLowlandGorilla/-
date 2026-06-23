@@ -493,6 +493,9 @@ $('#resetData').addEventListener('click', () => {
 });
 
 /* ---------- 시작 ---------- */
+// 안전장치: 시작 시 모든 모달을 확실히 닫아 둠 (CSS가 안 먹어도 클릭 가로채지 않도록)
+lessonModal.hidden = true;
+logModal.hidden = true;
 paintTimer();
 setTimerButtons();
 renderAll();
